@@ -1,4 +1,4 @@
-import { serverGetAPI, serverPostAPI } from "@/app/_server_utils/helper";
+import { serverPostAPI } from "@/app/_server_utils/helper";
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
@@ -36,7 +36,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: { token: any; user: any }) {
       if (user) {
         token._id = user._id?.toString();
         token.name = user.username || user.name || user?.phone;
