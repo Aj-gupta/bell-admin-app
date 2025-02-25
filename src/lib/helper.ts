@@ -88,6 +88,7 @@ export const patchAPI = async (url: string, data: any): Promise<any> => {
   try {
     const response = await axiosinstance({
       ...patchConfig,
+      withCredentials: false,
       url: `${url}`,
       data,
     });

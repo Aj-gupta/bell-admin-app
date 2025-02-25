@@ -18,9 +18,6 @@ const config = {
       },
     },
     extend: {
-      backgroundImage: {
-        "wave-pattern": "url('/svg/background.svg')",
-      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

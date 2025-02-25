@@ -4,6 +4,7 @@ import { formatDate } from "@/lib/helper";
 import CustomTable from "@/components/custom-components/CustomTable";
 import { useState, useEffect } from "react";
 import { getAPI } from "@/lib/helper";
+import { Spinner } from "@/components/ui/spinner";
 
 const columns = [
   {
@@ -50,12 +51,15 @@ const columns = [
 
 export default function Users() {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   const fetchUsers = async () => {
+    setLoading(true);
     const response = await getAPI("user/all", undefined);
     if (response.status === 200) {
       setUsers(response?.data?.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -66,7 +70,13 @@ export default function Users() {
   return (
     <>
       <div className="flex flex-col w-full h-full">
-        <CustomTable columns={columns} data={users} />
+        {loading ? (
+          <div className="flex justify-center items-center h-full w-full">
+            <Spinner />
+          </div>
+        ) : (
+          <CustomTable columns={columns} data={users} />
+        )}
       </div>
     </>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { getAPI, postAPI } from "@/lib/helper";
+import { getAPI, postAPI, patchAPI } from "@/lib/helper";
 import { useRouter } from "next/navigation";
 import { useUserDetail } from "@/lib/context/user_context/UserStateProvider";
 import { SET_USER_DETAILS } from "@/lib/context/user_context/user.actiontype";
