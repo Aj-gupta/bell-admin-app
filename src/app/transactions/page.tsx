@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
 
-const columns = [
+const columns: any[] = [
   {
     label: "Order Id",
     render: (data: any) => (
