@@ -17,6 +17,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
 
 const columns = [
   {
@@ -135,6 +136,7 @@ const PaymentStatus = {
 };
 
 export default function Transactions() {
+  const [loading, setLoading] = useState(false);
   const [orders, setOrders] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -178,6 +180,7 @@ export default function Transactions() {
   };
 
   useEffect(() => {
+    setLoading(true);
     if (!orders.length) {
       fetchTransactions();
     }
@@ -185,6 +188,7 @@ export default function Transactions() {
     if (columns[columns.length - 1].label != "Actions") {
       columns.push({
         label: "Actions",
+        sticky: true,
         render: (data: any) => (
           <div className="w-[120px] text-center">
             <Button
@@ -198,71 +202,84 @@ export default function Transactions() {
         ),
       });
     }
+    setLoading(false);
   }, []);
 
   return (
     <>
-      <CustomTable columns={columns} data={orders} />
-
-      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Order</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Order Status</label>
-              <Select
-                value={selectedOrderStatus}
-                onValueChange={setSelectedOrderStatus}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select order status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(OrderStatus).map(([key, value]) => (
-                    <SelectItem key={key} value={value}>
-                      {key.split("_").join(" ")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Payment Status</label>
-              <Select
-                value={selectedPaymentStatus}
-                onValueChange={setSelectedPaymentStatus}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select payment status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {Object.entries(PaymentStatus).map(([key, value]) => (
-                    <SelectItem key={key} value={value}>
-                      {key.split("_").join(" ")}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            <div className="flex justify-end gap-2">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setIsModalOpen(false);
-                  setSelectedOrder(null);
-                }}
-              >
-                Cancel
-              </Button>
-              <Button onClick={handleSubmit}>Update</Button>
-            </div>
+      <div className="flex flex-col w-full h-full">
+        {loading ? (
+          <div className="flex justify-center items-center h-full w-full">
+            <Spinner />
           </div>
-        </DialogContent>
-      </Dialog>
+        ) : (
+          <>
+            <CustomTable columns={columns} data={orders} />
+
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Order</DialogTitle>
+                </DialogHeader>
+                <div className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">Order Status</label>
+                    <Select
+                      value={selectedOrderStatus}
+                      onValueChange={setSelectedOrderStatus}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select order status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(OrderStatus).map(([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {key.split("_").join(" ")}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <label className="text-sm font-medium">
+                      Payment Status
+                    </label>
+                    <Select
+                      value={selectedPaymentStatus}
+                      onValueChange={setSelectedPaymentStatus}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select payment status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {Object.entries(PaymentStatus).map(([key, value]) => (
+                          <SelectItem key={key} value={value}>
+                            {key.split("_").join(" ")}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="flex justify-end gap-2">
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setIsModalOpen(false);
+                        setSelectedOrder(null);
+                      }}
+                    >
+                      Cancel
+                    </Button>
+                    <Button onClick={handleSubmit}>Update</Button>
+                  </div>
+                </div>
+              </DialogContent>
+            </Dialog>
+          </>
+        )}
+      </div>
     </>
   );
 }

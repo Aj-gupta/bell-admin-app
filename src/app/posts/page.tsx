@@ -2,8 +2,10 @@
 
 import { formatDate } from "@/lib/helper";
 import CustomTable from "@/components/custom-components/CustomTable";
+import Details from "./details";
 import { useState, useEffect } from "react";
 import { getAPI } from "@/lib/helper";
+import { Spinner } from "@/components/ui/spinner";
 
 const columns = [
   {
@@ -43,6 +45,24 @@ const columns = [
     ),
   },
   {
+    label: "Accepted Bid",
+    render: (data: any) => (
+      <p className="w-[200px] truncate">{data?.acceptedBid?.amount || "-"}</p>
+    ),
+  },
+  {
+    label: "Accepted Bid Date",
+    render: (data: any) => {
+      return (
+        <p className="truncate">
+          {data?.acceptedBid?.created_at
+            ? formatDate(data?.acceptedBid?.created_at)
+            : "-"}
+        </p>
+      );
+    },
+  },
+  {
     label: "Created",
     render: (data: any) => (
       <p className="flex justify-center">
@@ -53,23 +73,39 @@ const columns = [
 ];
 
 export default function Users() {
+  const [loading, setLoading] = useState(false);
   const [posts, setPosts] = useState([]);
 
-  const fetchUsers = async () => {
+  const fetchPosts = async () => {
+    setLoading(true);
     const response = await getAPI("post", undefined);
     if (response.status === 200) {
       setPosts(response?.data?.data);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     if (!posts.length) {
-      fetchUsers();
+      fetchPosts();
     }
   }, []);
   return (
     <>
-      <CustomTable columns={columns} data={posts} />
+      <div className="flex flex-col w-full h-full">
+        {loading ? (
+          <div className="flex justify-center items-center h-full w-full">
+            <Spinner />
+          </div>
+        ) : (
+          <CustomTable
+            columns={columns}
+            data={posts}
+            isDetails
+            DetailComponent={Details}
+          />
+        )}
+      </div>
     </>
   );
 }
