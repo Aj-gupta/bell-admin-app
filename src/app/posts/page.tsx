@@ -10,24 +10,28 @@ import { Spinner } from "@/components/ui/spinner";
 const columns = [
   {
     label: "Title",
+    valueGetter: (data: any) => data?.title || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data?.title || "-"}</p>
     ),
   },
   {
     label: "Status",
+    valueGetter: (data: any) => data.status || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data.status || "-"}</p>
     ),
   },
   {
     label: "description",
+    valueGetter: (data: any) => data?.description || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data?.description || "-"}</p>
     ),
   },
   {
     label: "Lowest Bid",
+    valueGetter: (data: any) => data?.postBids?.lowestBid?.amount || "-",
     render: (data: any) => (
       <p className="flex justify-center">
         {data?.postBids?.lowestBid?.amount || "-"}
@@ -36,6 +40,10 @@ const columns = [
   },
   {
     label: "Lowest Bid Date",
+    valueGetter: (data: any) =>
+      data?.created_at
+        ? formatDate(data?.postBids?.lowestBid?.created_at)
+        : "-",
     render: (data: any) => (
       <p className="flex justify-center">
         {data?.created_at
@@ -46,12 +54,17 @@ const columns = [
   },
   {
     label: "Accepted Bid",
+    valueGetter: (data: any) => data?.acceptedBid?.amount || "-",
     render: (data: any) => (
       <p className="w-[200px] truncate">{data?.acceptedBid?.amount || "-"}</p>
     ),
   },
   {
     label: "Accepted Bid Date",
+    valueGetter: (data: any) =>
+      data?.acceptedBid?.created_at
+        ? formatDate(data?.acceptedBid?.created_at)
+        : "-",
     render: (data: any) => {
       return (
         <p className="truncate">
@@ -64,6 +77,8 @@ const columns = [
   },
   {
     label: "Created",
+    valueGetter: (data: any) =>
+      data?.created_at ? formatDate(data?.created_at) : "-",
     render: (data: any) => (
       <p className="flex justify-center">
         {data?.created_at ? formatDate(data?.created_at) : "-"}

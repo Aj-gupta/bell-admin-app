@@ -9,24 +9,28 @@ import { Spinner } from "@/components/ui/spinner";
 const columns = [
   {
     label: "Name",
+    valueGetter: (data: any) => data?.profile?.full_name || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data?.profile?.full_name || "-"}</p>
     ),
   },
   {
     label: "Phone",
+    valueGetter: (data: any) => data.phone || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data.phone || "-"}</p>
     ),
   },
   {
     label: "email",
+    valueGetter: (data: any) => data?.profile?.email || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data?.profile?.email || "-"}</p>
     ),
   },
   {
     label: "Referral Code",
+    valueGetter: (data: any) => data?.profile?.referral_code || "-",
     render: (data: any) => (
       <p className="flex justify-center">
         {data?.profile?.referral_code || "-"}
@@ -35,12 +39,15 @@ const columns = [
   },
   {
     label: "Role",
+    valueGetter: (data: any) => data.role?.name || "-",
     render: (data: any) => (
       <p className="flex justify-center">{data.role?.name || "-"}</p>
     ),
   },
   {
     label: "Created",
+    valueGetter: (data: any) =>
+      data?.created_at ? formatDate(data?.created_at) : "-",
     render: (data: any) => (
       <p className="flex justify-center">
         {data?.created_at ? formatDate(data?.created_at) : "-"}

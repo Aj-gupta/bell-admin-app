@@ -22,18 +22,22 @@ import { Spinner } from "@/components/ui/spinner";
 const columns: any[] = [
   {
     label: "Order Id",
+    valueGetter: (data: any) => data?.order_id || "-",
     render: (data: any) => (
       <p className="w-[200px] truncate">{data?.order_id || "-"}</p>
     ),
   },
   {
     label: "Payment Id",
+    valueGetter: (data: any) => data.payment_id || "-",
     render: (data: any) => (
       <p className="w-[200px] truncate">{data.payment_id || "-"}</p>
     ),
   },
   {
     label: "Payment Type",
+    valueGetter: (data: any) =>
+      data?.pg_type === "offline" ? "COD" : "ONLINE",
     render: (data: any) => (
       <span
         className={`px-2 py-1 rounded-full text-xs font-medium
@@ -46,15 +50,19 @@ const columns: any[] = [
         {data?.pg_type === "offline" ? "COD" : "ONLINE"}
       </span>
     ),
+    filter: true,
   },
   {
     label: "Post Title",
+    valueGetter: (data: any) => data?.post?.title || "-",
     render: (data: any) => (
       <p className="w-[200px] truncate">{data?.post?.title || "-"}</p>
     ),
   },
   {
     label: "Order Status",
+    valueGetter: (data: any) =>
+      data?.status ? data.status.split("_").join(" ").toUpperCase() : "-",
     render: (data: any) => (
       <span
         className={`px-2 py-1 rounded-full text-xs font-medium
@@ -74,6 +82,10 @@ const columns: any[] = [
   },
   {
     label: "Payment Status",
+    valueGetter: (data: any) =>
+      data?.payment_status
+        ? data.payment_status.split("_").join(" ").toUpperCase()
+        : "-",
     render: (data: any) => (
       <span
         className={`px-2 py-1 rounded-full text-xs font-medium
@@ -92,21 +104,26 @@ const columns: any[] = [
           : "-"}
       </span>
     ),
+    filter: true,
   },
   {
     label: "Platfrom fee (%)",
+    valueGetter: (data: any) => data?.platform_fee || "-",
     render: (data: any) => (
       <p className="w-[200px] truncate">{data?.platform_fee || "-"}</p>
     ),
   },
   {
     label: "Transaction Amount",
+    valueGetter: (data: any) => data.amount || "-",
     render: (data: any) => (
       <p className="w-[200px] truncate">{data.amount || "-"}</p>
     ),
   },
   {
     label: "Created",
+    valueGetter: (data: any) =>
+      data?.created_at ? formatDate(data?.created_at) : "-",
     render: (data: any) => (
       <p className=" truncate">
         {data?.created_at ? formatDate(data?.created_at) : "-"}
@@ -151,6 +168,7 @@ export default function Transactions() {
     if (response.status === 200) {
       setOrders(response?.data?.data);
     }
+    setLoading(false);
   };
 
   const handleStatusChange = (order: any) => {
@@ -202,7 +220,6 @@ export default function Transactions() {
         ),
       });
     }
-    setLoading(false);
   }, []);
 
   return (

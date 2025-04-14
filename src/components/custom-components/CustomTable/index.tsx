@@ -8,12 +8,21 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
+import { Input } from "@/components/ui/input";
+import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 
 interface ColumnProps {
   label: string;
   key?: string;
   render?: (item: any) => React.ReactNode;
   sticky?: boolean;
+  valueGetter?: (item: any) => string | number | null | undefined;
+  filter?: boolean;
 }
 
 interface Props {
@@ -32,11 +41,64 @@ const CustomTable = ({
   DetailComponent,
 }: Props) => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [columnFilters, setColumnFilters] = useState<Record<string, string>>(
+    {}
+  );
 
   const toggleRow = (index: number) => {
     if (!isDetails) return;
     setExpandedRow(expandedRow === index ? null : index);
   };
+
+  const handleColumnFilterChange = (columnKey: string, value: string) => {
+    setColumnFilters((prev) => ({
+      ...prev,
+      [columnKey]: value,
+    }));
+  };
+
+  const filteredData = data.filter((item) => {
+    // Apply global search
+    if (searchTerm) {
+      const matchesSearch = columns.some((column) => {
+        let value;
+        if (column.valueGetter) {
+          value = column.valueGetter(item);
+        } else if (column.key) {
+          value = item[column.key];
+        }
+
+        if (value === null || value === undefined) return false;
+
+        const searchValue = String(value).toLowerCase();
+        const searchTermLower = searchTerm.toLowerCase();
+        return searchValue.includes(searchTermLower);
+      });
+      if (!matchesSearch) return false;
+    }
+
+    // Apply column filters
+    return Object.entries(columnFilters).every(([columnLabel, filterValue]) => {
+      if (!filterValue) return true;
+
+      const column = columns.find((col) => col.label === columnLabel);
+      if (!column) return true;
+
+      let value;
+      if (column.valueGetter) {
+        value = column.valueGetter(item);
+      } else if (column.key) {
+        value = item[column.key];
+      }
+
+      if (value === null || value === undefined) return false;
+
+      const searchValue = String(value).toLowerCase();
+      const filterValueLower = filterValue.toLowerCase();
+      return searchValue.includes(filterValueLower);
+    });
+  });
 
   const renderDefaultDetailRow = (item: any) => {
     return (
@@ -64,6 +126,15 @@ const CustomTable = ({
 
   return (
     <div className="h-full flex flex-col">
+      <div className="mb-4">
+        <Input
+          type="text"
+          placeholder="Search..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm"
+        />
+      </div>
       <div className="overflow-auto relative h-full w-full">
         <Table>
           {caption && <TableCaption>{caption}</TableCaption>}
@@ -84,14 +155,39 @@ const CustomTable = ({
                   }`}
                 >
                   <div className="rounded-md bg-slate-300 text-black py-1 px-5 text-center whitespace-nowrap">
-                    {column.label}
+                    <div className="flex items-center justify-center gap-2">
+                      {column.label}
+                      {column.filter && (column.key || column.valueGetter) && (
+                        <Popover>
+                          <PopoverTrigger asChild>
+                            <button className="p-1 hover:bg-slate-400 rounded">
+                              <MixerHorizontalIcon className="h-4 w-4" />
+                            </button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-48">
+                            <Input
+                              type="text"
+                              placeholder={`Filter ${column.label}`}
+                              value={columnFilters[column.label] || ""}
+                              onChange={(e) =>
+                                handleColumnFilterChange(
+                                  column.label,
+                                  e.target.value
+                                )
+                              }
+                              className="w-full"
+                            />
+                          </PopoverContent>
+                        </Popover>
+                      )}
+                    </div>
                   </div>
                 </TableHead>
               ))}
             </TableRow>
           </TableHeader>
           <TableBody className="overflow-auto">
-            {data.map((item, rowIndex) => (
+            {filteredData.map((item, rowIndex) => (
               <>
                 <TableRow
                   key={`row-${rowIndex}`}
