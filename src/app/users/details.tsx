@@ -27,13 +27,15 @@ const Details = ({ item }: DetailsProps) => {
           <h2 className="text-xl font-semibold text-gray-900 dark:text-gray-100">
             {item?.profile?.full_name || "User Details"}
           </h2>
-          <span
-            className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
-              item?.profile?.is_approved ? "active" : "pending"
-            )}`}
-          >
-            {item?.profile?.is_approved ? "Active" : "Pending"}
-          </span>
+          {item?.role?.name === "seller" && (
+            <span
+              className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(
+                item?.profile?.is_approved ? "active" : "pending"
+              )}`}
+            >
+              {item?.profile?.is_approved ? "Active" : "Pending"}
+            </span>
+          )}
         </div>
       </div>
 
