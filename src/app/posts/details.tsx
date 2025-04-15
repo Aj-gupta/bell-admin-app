@@ -170,6 +170,70 @@ const Details = ({ item }: DetailsProps) => {
           </div>
         </div>
 
+        <div className="space-y-3 bg-slate-50 dark:bg-slate-900 p-4 rounded-lg">
+          <h3 className="text-sm font-semibold flex items-center gap-2 text-gray-900 dark:text-gray-100">
+            Address Details
+          </h3>
+          <div className="space-y-2">
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Address Type
+              </p>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {postDetails.address?.type || "-"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Address Line 1
+              </p>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {postDetails.address?.address_line1 || "-"}
+              </p>
+            </div>
+            <div>
+              <p className="text-xs text-gray-500 dark:text-gray-400">
+                Address Line 2
+              </p>
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {postDetails.address?.address_line2 || "-"}
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">City</p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {postDetails.address?.city || "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  State
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {postDetails.address?.state || "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Zip Code
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {postDetails.address?.zip_code || "-"}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Country
+                </p>
+                <p className="text-sm text-gray-700 dark:text-gray-300">
+                  {postDetails.address?.country || "-"}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {postDetails.acceptedBid && (
           <div className="space-y-3 bg-blue-50 dark:bg-blue-950 p-4 rounded-lg">
             <h3 className="text-sm font-semibold flex items-center gap-2 text-gray-900 dark:text-gray-100">

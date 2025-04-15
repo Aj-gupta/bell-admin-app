@@ -9,7 +9,11 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
-import { MixerHorizontalIcon } from "@radix-ui/react-icons";
+import {
+  MixerHorizontalIcon,
+  ChevronDownIcon,
+  ChevronRightIcon,
+} from "@radix-ui/react-icons";
 import {
   Popover,
   PopoverContent,
@@ -142,7 +146,7 @@ const CustomTable = ({
             <TableRow style={{ borderBottomWidth: 0 }}>
               {isDetails && (
                 <TableHead className="p-2 w-10">
-                  <div className="rounded-md bg-slate-300 text-black py-1 px-2 text-center"></div>
+                  {/* <div className="rounded-md bg-slate-300 text-black py-1 px-2 text-center"></div> */}
                 </TableHead>
               )}
               {columns.map((column, index) => (
@@ -198,7 +202,11 @@ const CustomTable = ({
                 >
                   {isDetails && (
                     <TableCell className="p-2 w-10 text-center">
-                      {expandedRow === rowIndex ? "▼" : "▶"}
+                      {expandedRow === rowIndex ? (
+                        <ChevronDownIcon className="mx-auto h-4 w-4" />
+                      ) : (
+                        <ChevronRightIcon className="mx-auto h-4 w-4" />
+                      )}
                     </TableCell>
                   )}
                   {columns.map((column, colIndex) => (
