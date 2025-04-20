@@ -18,6 +18,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import Details from "./details";
 
 const columns: any[] = [
   {
@@ -163,6 +164,7 @@ export default function Transactions() {
   const [selectedPaymentStatus, setSelectedPaymentStatus] = useState<
     string | undefined
   >(undefined);
+
   const fetchTransactions = async () => {
     const response = await getAPI("order", undefined);
     if (response.status === 200) {
@@ -231,7 +233,12 @@ export default function Transactions() {
           </div>
         ) : (
           <>
-            <CustomTable columns={columns} data={orders} />
+            <CustomTable
+              columns={columns}
+              data={orders}
+              isDetails
+              DetailComponent={Details}
+            />
 
             <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
               <DialogContent>

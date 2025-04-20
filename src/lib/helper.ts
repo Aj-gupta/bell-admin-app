@@ -15,7 +15,6 @@ export const postAPI = async (url: string, data: any): Promise<any> => {
     data,
   })
     .then((response) => {
-      console.log("rees", response);
       return {
         status: response.status,
         data: response.data,
@@ -42,7 +41,6 @@ export const getAPI = async (url: string, data: any): Promise<any> => {
       url: data ? `${url}/${data}` : url,
     });
 
-    console.log({ response });
     return {
       status: response.status,
       data: response.data,
