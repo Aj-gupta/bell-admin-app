@@ -36,7 +36,6 @@ const Login = () => {
       callbackUrl: "/users",
       redirect: false,
     });
-
     if (response?.status == 200) {
       try {
         const user = await getAPI("user", null);
@@ -50,6 +49,8 @@ const Login = () => {
           );
 
           router.push("/users");
+        } else {
+          setErrorMessage(user?.data?.message || "error while fetching user");
         }
       } catch (error) {
         console.log({ error });

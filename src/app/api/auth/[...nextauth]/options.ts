@@ -20,12 +20,13 @@ export const authOptions: NextAuthOptions = {
             password: credentials.password,
             login_type: "admin",
           });
-
+          if (response?.status != 200) {
+            throw new Error(response?.data?.message || "Invalid credentials");
+          }
           user = {
             ...response?.data?.user,
             accessToken: response?.data?.token,
           };
-          console.log("user", user);
 
           return user;
         } catch (error: any) {
