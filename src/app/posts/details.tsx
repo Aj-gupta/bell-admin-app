@@ -106,6 +106,31 @@ const Details = ({ item }: DetailsProps) => {
                 {postDetails.description}
               </p>
             </div>
+            {postDetails.image_urls && postDetails.image_urls.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs text-gray-500 dark:text-gray-400">
+                  Images
+                </p>
+                <div className="h-[300px] w-full">
+                  <div className="flex gap-4 max-w-[76vw] overflow-x-scroll">
+                    {postDetails.image_urls.map(
+                      (image: string, index: number) => (
+                        <div
+                          key={index}
+                          className="relative aspect-square h-[300px] w-[300px] flex-shrink-0"
+                        >
+                          <img
+                            src={image}
+                            alt={`Post image ${index + 1}`}
+                            className="object-cover rounded-lg w-full h-full"
+                          />
+                        </div>
+                      )
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             <div className="border-t pt-3 mt-3">
               <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                 Posted By
@@ -272,6 +297,30 @@ const Details = ({ item }: DetailsProps) => {
                 <h4 className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
                   Bidder Details
                 </h4>
+                {postDetails.acceptedBid?.images &&
+                  postDetails.acceptedBid.images.length > 0 && (
+                    <div className="mb-4">
+                      <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
+                        Bid Images
+                      </p>
+                      <div className="flex gap-4 max-w-[76vw] overflow-x-scroll">
+                        {postDetails.acceptedBid.images.map(
+                          (image: string, index: number) => (
+                            <div
+                              key={index}
+                              className="relative aspect-square h-[300px] w-[300px] flex-shrink-0"
+                            >
+                              <img
+                                src={image}
+                                alt={`Bid image ${index + 1}`}
+                                className="w-full h-full object-cover rounded-lg"
+                              />
+                            </div>
+                          )
+                        )}
+                      </div>
+                    </div>
+                  )}
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <p className="text-xs text-gray-500 dark:text-gray-400">
