@@ -1,6 +1,8 @@
 "use client";
 
-import { formatDate } from "@/lib/helper";
+import { Spinner } from "@/components/ui/spinner";
+import { formatDate, getAPI } from "@/lib/helper";
+import { useEffect, useState } from "react";
 
 interface DetailsProps {
   item: any;
@@ -20,6 +22,40 @@ const getStatusColor = (status: string) => {
 };
 
 const Details = ({ item }: DetailsProps) => {
+  const [address, setAddress] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const fetchAddress = async () => {
+      if (item?.role?.name === "seller" && item?._id) {
+        setLoading(true);
+        try {
+          const response = await getAPI(`user/${item._id}/address`, null);
+          if (response.status === 200) {
+            setAddress(
+              response.data.data?.filter(
+                (address: any) => address.is_primary
+              )[0]
+            );
+          }
+        } catch (error) {
+          console.error("Error fetching address:", error);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchAddress();
+  }, [item]);
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center p-8">
+        <Spinner />
+      </div>
+    );
+  }
   return (
     <div className="w-full bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden">
       <div className="p-6 pb-3">
@@ -116,20 +152,24 @@ const Details = ({ item }: DetailsProps) => {
               </div>
             </div>
 
-            {item?.profile?.gst_number && (
+            {(item?.profile?.gst_number ||
+              item?.profile?.legal_document_url ||
+              address) && (
               <div>
                 <h3 className="text-sm font-semibold flex items-center gap-2 text-gray-900 dark:text-gray-100 mb-3">
                   Business Information
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-gray-500 dark:text-gray-400">
-                      GST Number
-                    </p>
-                    <p className="text-sm text-gray-700 dark:text-gray-300">
-                      {item?.profile?.gst_number}
-                    </p>
-                  </div>
+                  {item?.profile?.gst_number && (
+                    <div>
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        GST Number
+                      </p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        {item?.profile?.gst_number}
+                      </p>
+                    </div>
+                  )}
                   {item?.profile?.legal_document_url && (
                     <div>
                       <p className="text-xs text-gray-500 dark:text-gray-400">
@@ -143,6 +183,20 @@ const Details = ({ item }: DetailsProps) => {
                       >
                         View Document
                       </a>
+                    </div>
+                  )}
+                  {address && (
+                    <div className="col-span-2">
+                      <p className="text-xs text-gray-500 dark:text-gray-400">
+                        Business Address
+                      </p>
+                      <p className="text-sm text-gray-700 dark:text-gray-300">
+                        {address.address_line2 && `${address.address_line2}`}
+                        {address.city && `, ${address.city}`}
+                        {address.state && `, ${address.state}`}
+                        {address.country && `, ${address.country}`}
+                        {address.zip_code && ` - ${address.zip_code}`}
+                      </p>
                     </div>
                   )}
                 </div>
