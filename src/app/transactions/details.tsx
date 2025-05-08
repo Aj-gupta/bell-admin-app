@@ -12,8 +12,8 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { FileIcon, DownloadIcon } from "@radix-ui/react-icons";
-import html2pdf from "html2pdf.js";
 
+let html2pdf: any;
 interface DetailsProps {
   item: any;
 }
@@ -99,6 +99,8 @@ const Details = ({ item }: DetailsProps) => {
           setSellerAddress(
             response.data.data.filter((address: any) => address.is_primary)[0]
           );
+          // @ts-ignore
+          html2pdf = (await import("html2pdf.js/dist/html2pdf.min.js")).default;
         }
       } catch (error) {
         console.error("Error fetching order details:", error);
