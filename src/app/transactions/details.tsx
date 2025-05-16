@@ -82,7 +82,7 @@ const Details = ({ item }: DetailsProps) => {
   const [postUser, setPostUser] = useState<any>(null);
   const [bidUser, setBidUser] = useState<any>(null);
   const [sellerAddress, setSellerAddress] = useState<any>(null);
-
+  const [coinHistory, setCoinHistory] = useState<any>(null);
   useEffect(() => {
     const fetchOrderDetails = async () => {
       try {
@@ -397,7 +397,7 @@ const Details = ({ item }: DetailsProps) => {
                   >
                     <div className="flex justify-between items-center mb-6">
                       <div className="text-xs text-gray-400 font-semibold"></div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-gray-700 font-bold">
                         NO. INV{orderDetails.order_id}
                       </div>
                     </div>
@@ -405,13 +405,13 @@ const Details = ({ item }: DetailsProps) => {
                     <div className="flex justify-between mb-6">
                       <div>
                         <span className="font-semibold">Date:</span>
-                        <span className="ml-2">
+                        <span className="ml-2 font-semibold">
                           {formatDate(orderDetails.created_at)}
                         </span>
                       </div>
                     </div>
                     <div className="flex flex-wrap justify-between mb-6 gap-8">
-                      <div>
+                      <div className="font-semibold">
                         <div className="font-bold mb-1">Billed to:</div>
                         <div>{orderDetails.post_address?.address_line2}</div>
                         <div>
@@ -426,7 +426,7 @@ const Details = ({ item }: DetailsProps) => {
                         <div>{orderDetails.post_address?.country}</div>
                         {postUser?.email && <div>{postUser?.email}</div>}
                       </div>
-                      <div>
+                      <div className="font-semibold">
                         <div className="font-bold mb-1">From:</div>
                         <div>Bell App</div>
                         <div>Kolkata, West Bengal, India</div>
@@ -451,7 +451,7 @@ const Details = ({ item }: DetailsProps) => {
                             </th>
                           </tr>
                         </thead>
-                        <tbody>
+                        <tbody className="font-semibold">
                           <tr>
                             <td className="px-4 py-2 border-t">
                               {orderDetails.post?.title || "Post"}

@@ -12,6 +12,7 @@ export const postAPI = async (url: string, data: any): Promise<any> => {
   return await axiosinstance({
     ...postConfig,
     url: `${url}`,
+    withCredentials: false,
     data,
   })
     .then((response) => {

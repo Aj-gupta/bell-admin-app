@@ -19,6 +19,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface ColumnProps {
   label: string;
@@ -35,6 +36,9 @@ interface Props {
   caption?: string;
   isDetails?: boolean;
   DetailComponent?: React.ComponentType<{ item: any }>;
+  disableSearch?: boolean;
+  selectable?: boolean;
+  onSelectionChange?: (selectedItems: any[]) => void;
 }
 
 const CustomTable = ({
@@ -43,12 +47,16 @@ const CustomTable = ({
   caption,
   isDetails = false,
   DetailComponent,
+  disableSearch = false,
+  selectable = false,
+  onSelectionChange,
 }: Props) => {
   const [expandedRow, setExpandedRow] = useState<number | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [columnFilters, setColumnFilters] = useState<Record<string, string>>(
     {}
   );
+  const [selectedRows, setSelectedRows] = useState<Set<number>>(new Set());
 
   const toggleRow = (index: number) => {
     if (!isDetails) return;
@@ -60,6 +68,28 @@ const CustomTable = ({
       ...prev,
       [columnKey]: value,
     }));
+  };
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      const allIndices = filteredData.map((_, index) => index);
+      setSelectedRows(new Set(allIndices));
+      onSelectionChange?.(filteredData);
+    } else {
+      setSelectedRows(new Set());
+      onSelectionChange?.([]);
+    }
+  };
+
+  const handleSelectRow = (index: number, checked: boolean) => {
+    const newSelectedRows = new Set(selectedRows);
+    if (checked) {
+      newSelectedRows.add(index);
+    } else {
+      newSelectedRows.delete(index);
+    }
+    setSelectedRows(newSelectedRows);
+    onSelectionChange?.(filteredData.filter((_, i) => newSelectedRows.has(i)));
   };
 
   const filteredData = data.filter((item) => {
@@ -130,20 +160,37 @@ const CustomTable = ({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="mb-4">
-        <Input
-          type="text"
-          placeholder="Search..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm"
-        />
-      </div>
+      {!disableSearch ? (
+        <div className="mb-4">
+          <Input
+            type="text"
+            placeholder="Search..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="max-w-sm"
+          />
+        </div>
+      ) : (
+        ""
+      )}
       <div className="overflow-auto relative h-full w-full">
         <Table>
           {caption && <TableCaption>{caption}</TableCaption>}
           <TableHeader className="sticky top-0 bg-white z-10">
             <TableRow style={{ borderBottomWidth: 0 }}>
+              {selectable && (
+                <TableHead className="p-2 w-10">
+                  <div className="flex items-center justify-center">
+                    <Checkbox
+                      checked={
+                        selectedRows.size === filteredData.length &&
+                        filteredData.length > 0
+                      }
+                      onCheckedChange={handleSelectAll}
+                    />
+                  </div>
+                </TableHead>
+              )}
               {isDetails && (
                 <TableHead className="p-2 w-10">
                   {/* <div className="rounded-md bg-slate-300 text-black py-1 px-2 text-center"></div> */}
@@ -200,6 +247,19 @@ const CustomTable = ({
                   }`}
                   onClick={() => toggleRow(rowIndex)}
                 >
+                  {selectable && (
+                    <TableCell className="p-2 w-10">
+                      <div className="flex items-center justify-center">
+                        <Checkbox
+                          checked={selectedRows.has(rowIndex)}
+                          onCheckedChange={(checked) =>
+                            handleSelectRow(rowIndex, checked as boolean)
+                          }
+                          onClick={(e) => e.stopPropagation()}
+                        />
+                      </div>
+                    </TableCell>
+                  )}
                   {isDetails && (
                     <TableCell className="p-2 w-10 text-center">
                       {expandedRow === rowIndex ? (

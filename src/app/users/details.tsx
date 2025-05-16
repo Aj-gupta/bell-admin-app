@@ -24,29 +24,35 @@ const getStatusColor = (status: string) => {
 const Details = ({ item }: DetailsProps) => {
   const [address, setAddress] = useState<any>(null);
   const [loading, setLoading] = useState(false);
+  const [coinSummary, setCoinSummary] = useState<any>(null);
 
   useEffect(() => {
-    const fetchAddress = async () => {
-      if (item?.role?.name === "seller" && item?._id) {
+    const fetchData = async () => {
+      if (item?._id) {
         setLoading(true);
         try {
-          const response = await getAPI(`user/${item._id}/address`, null);
-          if (response.status === 200) {
-            setAddress(
-              response.data.data?.filter(
-                (address: any) => address.is_primary
-              )[0]
+          if (item?.role?.name === "seller") {
+            const addressResponse = await getAPI(
+              `user/${item._id}/address`,
+              null
             );
+            if (addressResponse.status === 200) {
+              setAddress(
+                addressResponse.data.data?.filter(
+                  (address: any) => address.is_primary
+                )[0]
+              );
+            }
           }
         } catch (error) {
-          console.error("Error fetching address:", error);
+          console.error("Error fetching data:", error);
         } finally {
           setLoading(false);
         }
       }
     };
 
-    fetchAddress();
+    fetchData();
   }, [item]);
 
   if (loading) {

@@ -7,10 +7,12 @@ import { getAPI, patchAPI } from "@/lib/helper";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import Details from "./details";
+import { UserCoins } from "./coins";
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<any>(null);
 
   const handleApproveUser = async (userId: string) => {
     try {
@@ -103,7 +105,7 @@ export default function Users() {
       label: "Actions",
       sticky: true,
       render: (data: any) => (
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-start gap-2">
           {!data.profile?.is_approved && data.role?.name === "seller" && (
             <Button
               variant="outline"
@@ -114,6 +116,14 @@ export default function Users() {
               Approve
             </Button>
           )}
+          <Button
+            variant="outline"
+            size="sm"
+            className="bg-blue-500 text-white hover:bg-blue-600"
+            onClick={() => setSelectedUser(data)}
+          >
+            Coins
+          </Button>
         </div>
       ),
     },
@@ -133,12 +143,18 @@ export default function Users() {
             <Spinner />
           </div>
         ) : (
-          <CustomTable
-            columns={columns}
-            data={users}
-            isDetails
-            DetailComponent={Details}
-          />
+          <>
+            <CustomTable
+              columns={columns}
+              data={users}
+              isDetails
+              DetailComponent={Details}
+            />
+            <UserCoins
+              selectedUser={selectedUser}
+              onClose={() => setSelectedUser(null)}
+            />
+          </>
         )}
       </div>
     </>
